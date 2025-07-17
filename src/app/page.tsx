@@ -23,13 +23,13 @@ export default function LandingPage() {
               className="px-6 py-3 text-lg"
               onClick={() => router.push("/login")}
             >
-              Get Started
+              Login
             </InteractiveHoverButton>
             <InteractiveHoverButton
               className="px-6 py-3 text-lg"
               onClick={() => router.push("/signup")}
             >
-              Sign Up
+             Get Started
             </InteractiveHoverButton>
           </div>
         </div>
