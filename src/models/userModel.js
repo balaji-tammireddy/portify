@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { type } from "os";
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -19,7 +18,7 @@ const userSchema = new mongoose.Schema({
     forgotPasswordTokenExpiry: Date,
     verifyToken: String,
     verifyTokenExpiry: Date
-})
+},{ timestamps: true })
 
 const User = mongoose.models.users || mongoose.model("users", userSchema);
 
