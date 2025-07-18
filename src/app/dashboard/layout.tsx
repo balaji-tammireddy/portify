@@ -17,13 +17,16 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [open, setOpen] = useState(true);
   const [userName, setUserName] = useState<string | null>(null);
+  const [slug, setSlug] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const res = await axios.post("/api/users/userDetails");
-        setUserName(res.data?.data?.name || "User");
+        const name = res.data?.data?.name || "user";
+        setUserName(name);
+        setSlug(generateSlug(name));
       } catch (error) {
         console.error("Failed to fetch user details:", error);
         router.push("/login");
@@ -42,6 +45,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const generateSlug = (name: string) => {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
   };
 
   if (loading) {
@@ -98,7 +108,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     <div className="flex h-screen w-full">
       <Sidebar open={open} setOpen={setOpen} animate={true}>
         <SidebarBody className="h-full flex flex-col justify-between">
-          {/* Top: Logo & Links */}
           <div className="flex flex-col overflow-y-auto">
             <Logo open={open} />
             <div className="mt-8 flex flex-col gap-2">
@@ -108,10 +117,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             </div>
           </div>
 
-          {/* Bottom: Portfolio, Logout, Username */}
           <div className="flex flex-col gap-2 mt-4 border-t border-gray-200 dark:border-gray-700 pt-4 px-2">
             <button
-              onClick={() => window.open(`/portfolio/${userName}`, "_blank")}
+              onClick={() =>
+                slug && window.open(`/portfolio/${slug}`, "_blank")
+              }
               className={cn(
                 "flex items-center px-3 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/20 rounded-md transition w-full"
               )}
@@ -149,7 +159,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         </SidebarBody>
       </Sidebar>
 
-      {/* Main content */}
       <main className="flex-1 bg-gray-100 dark:bg-neutral-900 p-6 overflow-y-auto h-full">
         {children}
       </main>
@@ -157,7 +166,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   );
 }
 
-// Logo component
 const Logo = ({ open }: { open: boolean }) => {
   if (!open) return null;
 

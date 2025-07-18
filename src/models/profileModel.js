@@ -12,10 +12,10 @@ const profileSchema = new mongoose.Schema(
     linkedin: { type: String },
     github: { type: String },
     website: { type: String },
+    slug: { type: String, required: true, unique: true },
   },
   { timestamps: true }
 );
 
 const Profile = mongoose.models.profiles || mongoose.model("profiles", profileSchema);
-
-export default Profile
+export default Profile;

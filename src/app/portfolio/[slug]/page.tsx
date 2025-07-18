@@ -12,7 +12,7 @@ import { Timeline } from "@/components/ui/timeline";
 import { AuroraText } from "@/components/magicui/aurora-text";
 
 export default function PortfolioPage() {
-  const { username } = useParams();
+  const { slug } = useParams();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const ref = useRef<HTMLDivElement>(null);
@@ -20,15 +20,17 @@ export default function PortfolioPage() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await axios.post("/api/portfolio", { username });
-        if (res.data.success) setData(res.data.data);
+        const res = await axios.get(`/api/portfolio?slug=${slug}`);
+        if (res.status === 200) {
+          setData(res.data);
+        }
       } catch (err) {
         console.error(err);
       } finally {
         setLoading(false);
       }
     })();
-  }, [username]);
+  }, [slug]);
 
   const downloadPDF = async () => {
     if (!ref.current) return;
@@ -38,7 +40,7 @@ export default function PortfolioPage() {
     const width = pdf.internal.pageSize.getWidth();
     const height = (canvas.height * width) / canvas.width;
     pdf.addImage(img, "PNG", 0, 0, width, height);
-    pdf.save(`${username}_portfolio.pdf`);
+    pdf.save(`${slug}_portfolio.pdf`);
   };
 
   if (loading) {
@@ -58,6 +60,7 @@ export default function PortfolioPage() {
       ref={ref}
       className="bg-black text-white h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth"
     >
+      {/* Profile Section */}
       <div className="min-h-screen text-center px-32 py-24 space-y-10 snap-start">
         <section>
           <p className="text-6xl font-bold my-10">{profile.fullName}</p>
@@ -83,6 +86,7 @@ export default function PortfolioPage() {
         </section>
       </div>
 
+      {/* Skills */}
       <div className="min-h-screen px-32 py-24 text-center snap-start">
         <section>
           <AuroraText className="text-5xl font-bold mb-25">Skills</AuroraText>
@@ -96,58 +100,57 @@ export default function PortfolioPage() {
         </section>
       </div>
 
+      {/* Experience */}
       <div className="min-h-screen px-32 py-24 snap-start">
         <section className="text-center">
-            <AuroraText className="text-5xl font-bold mb-25 text-center">
+          <AuroraText className="text-5xl font-bold mb-25 text-center">
             Experience
-            </AuroraText>
-            <div className="text-left">
+          </AuroraText>
+          <div className="text-left">
             <Timeline
-                data={experience.map((e: any) => ({
+              data={experience.map((e: any) => ({
                 title: e.company,
                 content: (
-                    <div className="space-y-1">
+                  <div className="space-y-1">
                     <p className="text-xl font-semibold text-white">{e.position}</p>
                     <p className="text-sm text-gray-400">
-                        {new Date(e.startDate).toLocaleDateString()} –{" "}
-                        {e.endDate ? new Date(e.endDate).toLocaleDateString() : "Present"}
+                      {new Date(e.startDate).toLocaleDateString()} –{" "}
+                      {e.endDate ? new Date(e.endDate).toLocaleDateString() : "Present"}
                     </p>
                     <p className="mt-2">{e.description}</p>
-                    </div>
+                  </div>
                 ),
-                }))}
+              }))}
             />
-            </div>
+          </div>
         </section>
-    </div>
+      </div>
 
-
+      {/* Education */}
       <div className="min-h-screen px-32 py-24 snap-start">
         <section className="text-center">
-            <AuroraText className="text-5xl font-bold mb-25 text-center">
-            Education
-            </AuroraText>
-            <div className="text-left">
+          <AuroraText className="text-5xl font-bold mb-25 text-center">Education</AuroraText>
+          <div className="text-left">
             <Timeline
-                data={education.map((ed: any) => ({
+              data={education.map((ed: any) => ({
                 title: ed.degree,
                 content: (
-                    <div className="space-y-1">
+                  <div className="space-y-1">
                     <p className="text-xl font-semibold text-white">{ed.fieldOfStudy}</p>
                     <p className="text-gray-400">{ed.institution}</p>
                     <p className="text-sm text-gray-400">
-                        {new Date(ed.startDate).toLocaleDateString()} –{" "}
-                        {ed.endDate ? new Date(ed.endDate).toLocaleDateString() : "Present"}
+                      {new Date(ed.startDate).toLocaleDateString()} –{" "}
+                      {ed.endDate ? new Date(ed.endDate).toLocaleDateString() : "Present"}
                     </p>
-                    </div>
+                  </div>
                 ),
-                }))}
+              }))}
             />
-            </div>
+          </div>
         </section>
-    </div>
+      </div>
 
-
+      {/* Projects */}
       <div className="min-h-screen px-32 py-24 snap-start text-center">
         <section>
           <AuroraText className="text-5xl font-bold mb-25">Projects</AuroraText>
@@ -173,6 +176,7 @@ export default function PortfolioPage() {
         </section>
       </div>
 
+      {/* Certificates */}
       <div className="min-h-screen px-32 py-24 snap-start text-center">
         <section>
           <AuroraText className="text-5xl font-bold mb-25">Certificates</AuroraText>
@@ -193,6 +197,13 @@ export default function PortfolioPage() {
             ))}
           </div>
         </section>
+      </div>
+
+      {/* Download Button */}
+      <div className="px-32 py-10 text-center bg-black snap-start">
+        <Button onClick={downloadPDF} className="text-white bg-blue-600 hover:bg-blue-700">
+          Download PDF
+        </Button>
       </div>
     </div>
   );
