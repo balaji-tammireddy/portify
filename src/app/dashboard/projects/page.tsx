@@ -115,6 +115,18 @@ export default function ProjectsPage() {
     setForm({ ...form, technologies: newTechs });
   };
 
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-white dark:bg-black z-50">
+        <div
+          className="w-12 h-12 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin"
+          role="status"
+          aria-label="Loading"
+        ></div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <Card className="mb-6">

@@ -219,19 +219,19 @@ export default function EducationPage() {
               <div>
                 <strong>Grade:</strong> {edu.grade}
               </div>
-              <div className="flex gap-2 mt-3">
-                <Button size="sm" onClick={() => handleEdit(edu)} disabled={loading}>
-                  Edit
-                </Button>
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => handleDelete(edu._id)}
-                  disabled={loading}
-                >
-                  Delete
-                </Button>
-              </div>
+              <div className="flex justify-between mt-2">
+                              <Button size="sm" onClick={() => handleEdit(edu)} disabled={loading}>
+                                Edit
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => handleDelete(edu._id)}
+                                disabled={loading}
+                              >
+                                Delete
+                              </Button>
+                            </div>
             </CardContent>
           </Card>
         ))}

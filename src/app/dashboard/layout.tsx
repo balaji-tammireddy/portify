@@ -19,7 +19,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [userName, setUserName] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Fetch logged-in user's name
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -93,19 +92,14 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       href: "/dashboard/certificate",
       icon: <IconBrandTabler className="h-5 w-5" />,
     },
-    {
-      label: "Portfolio",
-      href: "/dashboard/portfolio",
-      icon: <IconBrandTabler className="h-5 w-5" />,
-    },
   ];
 
   return (
     <div className="flex h-screen w-full">
       <Sidebar open={open} setOpen={setOpen} animate={true}>
         <SidebarBody className="h-full flex flex-col justify-between">
-          {/* Top section with logo and links */}
-          <div className="flex-1 flex flex-col overflow-y-auto">
+          {/* Top: Logo & Links */}
+          <div className="flex flex-col overflow-y-auto">
             <Logo open={open} />
             <div className="mt-8 flex flex-col gap-2">
               {links.map((link, idx) => (
@@ -114,25 +108,43 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             </div>
           </div>
 
-          {/* Bottom section with user name and logout */}
-          <div className="mb-4 flex flex-col gap-2">
-            <SidebarLink
-              link={{
-                label: userName || "Loading...",
-                href: "/dashboard/profile",
-                icon: <IconUserBolt className="h-5 w-5" />,
-              }}
-            />
+          {/* Bottom: Portfolio, Logout, Username */}
+          <div className="flex flex-col gap-2 mt-4 border-t border-gray-200 dark:border-gray-700 pt-4 px-2">
+            <button
+              onClick={() => window.open(`/portfolio/${userName}`, "_blank")}
+              className={cn(
+                "flex items-center px-3 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/20 rounded-md transition w-full"
+              )}
+              title="View Portfolio"
+            >
+              <IconLayoutDashboard className="h-5 w-5 mr-2" />
+              {open && "View Portfolio"}
+            </button>
 
             <button
               onClick={handleLogout}
               className={cn(
-                "flex items-center px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-md transition"
+                "flex items-center px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-md transition w-full"
               )}
+              title="Logout"
             >
               <IconLogout className="h-5 w-5 mr-2" />
-              Logout
+              {open && "Logout"}
             </button>
+
+            <div
+              className={cn(
+                "mt-2 px-3 py-2 text-xl font-medium text-gray-500 dark:text-gray-400 flex items-center border-t border-gray-200 dark:border-gray-700",
+                open ? "justify-start" : "justify-center"
+              )}
+              title={userName || "User"}
+            >
+              {open ? (
+                <span className="truncate">{userName}</span>
+              ) : (
+                <IconUserBolt className="h-5 w-5" />
+              )}
+            </div>
           </div>
         </SidebarBody>
       </Sidebar>
@@ -145,7 +157,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   );
 }
 
-// Logo component, only visible when sidebar is open
+// Logo component
 const Logo = ({ open }: { open: boolean }) => {
   if (!open) return null;
 
