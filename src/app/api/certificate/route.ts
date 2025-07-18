@@ -1,5 +1,5 @@
 import { connect } from "@/dbSetup/dbSetup";
-import Experience from "@/models/experienceModel";
+import Certificate from "@/models/certificateModel";
 import { NextRequest, NextResponse } from "next/server";
 import { getDataFromToken } from "@/helpers/getDataFromToken";
 
@@ -8,10 +8,10 @@ connect();
 export async function GET(request: NextRequest) {
   try {
     const userId = await getDataFromToken(request);
-    const experience = await Experience.find({ userId });
+    const certificates = await Certificate.find({ userId });
 
     return NextResponse.json(
-      { message: "Experience fetched successfully", data: experience },
+      { message: "Certificates fetched successfully", data: certificates },
       { status: 200 }
     );
   } catch (error: any) {
@@ -27,49 +27,56 @@ export async function POST(request: NextRequest) {
     }
 
     const reqBody = await request.json();
-    const { _id, company, position, startDate, endDate, description } = reqBody;
+    const {
+      _id, 
+      title,
+      issuer,
+      issueDate,
+      description,
+      certificateLink,
+    } = reqBody;
 
-    if (!company || !position || !startDate) {
+    if (!title || !issuer || !issueDate) {
       return NextResponse.json(
-        { error: "Please fill all required fields" },
+        { error: "Title, Issuer, and Issue Date are required" },
         { status: 400 }
       );
     }
 
     if (_id) {
-      const experience = await Experience.findOne({ _id, userId });
-      if (!experience) {
+      const existing = await Certificate.findOne({ _id, userId });
+      if (!existing) {
         return NextResponse.json(
-          { error: "Experience entry not found" },
+          { error: "Certificate not found" },
           { status: 404 }
         );
       }
 
-      experience.company = company;
-      experience.position = position;
-      experience.startDate = startDate;
-      experience.endDate = endDate;
-      experience.description = description;
+      existing.title = title;
+      existing.issuer = issuer;
+      existing.issueDate = issueDate;
+      existing.description = description;
+      existing.certificateLink = certificateLink;
 
-      const updated = await experience.save();
+      const updated = await existing.save();
       return NextResponse.json(
-        { message: "Experience updated successfully", data: updated },
+        { message: "Certificate updated successfully", data: updated },
         { status: 200 }
       );
     }
 
-    const newExperience = new Experience({
+    const newCertificate = new Certificate({
       userId,
-      company,
-      position,
-      startDate,
-      endDate,
+      title,
+      issuer,
+      issueDate,
       description,
+      certificateLink,
     });
 
-    const saved = await newExperience.save();
+    const saved = await newCertificate.save();
     return NextResponse.json(
-      { message: "Experience added successfully", data: saved },
+      { message: "Certificate added successfully", data: saved },
       { status: 201 }
     );
   } catch (error: any) {
@@ -81,29 +88,29 @@ export async function DELETE(request: NextRequest) {
   try {
     const userId = await getDataFromToken(request);
     const { searchParams } = new URL(request.url);
-    const experienceId = searchParams.get("experienceId");
+    const certificateId = searchParams.get("certificateId");
 
-    if (!experienceId) {
+    if (!certificateId) {
       return NextResponse.json(
-        { error: "Experience ID not provided" },
+        { error: "Certificate ID not provided" },
         { status: 400 }
       );
     }
 
-    const deleted = await Experience.findOneAndDelete({
-      _id: experienceId,
+    const deleted = await Certificate.findOneAndDelete({
+      _id: certificateId,
       userId,
     });
 
     if (!deleted) {
       return NextResponse.json(
-        { error: "Experience not found" },
+        { error: "Certificate not found" },
         { status: 404 }
       );
     }
 
     return NextResponse.json(
-      { message: "Experience deleted successfully", data: deleted },
+      { message: "Certificate deleted successfully", data: deleted },
       { status: 200 }
     );
   } catch (error: any) {

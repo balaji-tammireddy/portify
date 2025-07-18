@@ -89,6 +89,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       icon: <IconBrandTabler className="h-5 w-5" />,
     },
     {
+      label: "Certificates",
+      href: "/dashboard/certificate",
+      icon: <IconBrandTabler className="h-5 w-5" />,
+    },
+    {
       label: "Portfolio",
       href: "/dashboard/portfolio",
       icon: <IconBrandTabler className="h-5 w-5" />,
