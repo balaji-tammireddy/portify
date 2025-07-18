@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState([]);
@@ -134,7 +135,7 @@ export default function ProjectsPage() {
 
             <div>
               <Label className="mb-2">Description</Label>
-              <Input
+              <Textarea
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
                 disabled={loading}
