@@ -94,7 +94,6 @@ export default function SkillsPage() {
               <Input
                 id="skill"
                 type="text"
-                placeholder="Enter skill name"
                 value={skillInput.skill}
                 onChange={(e) => setSkillInput({ ...skillInput, skill: e.target.value })}
                 disabled={loading}

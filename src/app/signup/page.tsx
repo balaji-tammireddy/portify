@@ -68,7 +68,6 @@ export default function SignupPage() {
                 <Input
                   id="name"
                   type="text"
-                  placeholder="John Doe"
                   disabled={loading}
                   value={user.name}
                   onChange={(e) => setUser({ ...user, name: e.target.value })}
@@ -80,7 +79,6 @@ export default function SignupPage() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="john@example.com"
                   disabled={loading}
                   value={user.email}
                   onChange={(e) => setUser({ ...user, email: e.target.value })}
@@ -92,7 +90,6 @@ export default function SignupPage() {
                 <Input
                   id="password"
                   type="password"
-                  placeholder="••••••••"
                   disabled={loading}
                   value={user.password}
                   onChange={(e) =>
